@@ -8,7 +8,7 @@ import fs from "fs";
 import path from "path";
 
 // 🛠 Crear carpeta y archivo memory.json si no existen
-const dataDir = path.join(process.cwd(), "data");
+const dataDir = path.join(process.cwd(), "dist", "data");
 const memoryFile = path.join(dataDir, "memory.json");
 
 

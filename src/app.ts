@@ -3,6 +3,22 @@ import axios from "axios";
 import dotenv from "dotenv";
 
 import { deepSeekChat } from "./services/deepseek";
+
+import fs from "fs";
+import path from "path";
+
+// 🛠 Crear carpeta y archivo memory.json si no existen
+const dataDir = path.join(process.cwd(), "data");
+const memoryFile = path.join(dataDir, "memory.json");
+
+
+if (!fs.existsSync(memoryFile)) {
+  fs.writeFileSync(memoryFile, JSON.stringify({}, null, 2));
+  console.log("📝 Archivo memory.json creado");
+}
+
+
+
 import { getUserMemory, updateUserMemory, pushHistory } from "./services/memory";
 import { getUserName } from "./services/facebook";
 

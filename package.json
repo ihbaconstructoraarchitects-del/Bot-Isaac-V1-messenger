@@ -8,7 +8,7 @@
     "start": "node ./dist/app.js",
     "lint": "eslint . --no-ignore",
     "dev": "npm run lint && nodemon --signal SIGKILL  ./src/app.ts",
-    "build": "npx rollup -c && cp -r data dist/data"
+    "build": "npx rollup -c"
   },
   "keywords": [],
   "dependencies": {

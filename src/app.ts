@@ -4,20 +4,6 @@ import dotenv from "dotenv";
 
 import { deepSeekChat } from "./services/deepseek";
 
-import fs from "fs";
-import path from "path";
-
-// 🛠 Crear carpeta y archivo memory.json si no existen
-const dataDir = path.join(process.cwd(), "dist", "data");
-const memoryFile = path.join(dataDir, "memory.json");
-
-
-if (!fs.existsSync(memoryFile)) {
-  fs.writeFileSync(memoryFile, JSON.stringify({}, null, 2));
-  console.log("📝 Archivo memory.json creado");
-}
-
-
 
 import { getUserMemory, updateUserMemory, pushHistory } from "./services/memory";
 import { getUserName } from "./services/facebook";
@@ -149,13 +135,14 @@ app.post("/webhook", async (req, res) => {
       // ------------------------
       // 🧠 IA + MEMORIA
 
-      const mem = getUserMemory(sender);
-      pushHistory(sender, text);
+      const mem = await getUserMemory(sender);
+      await pushHistory(sender, text);
+
 
       const matchName = text.match(/me llamo ([a-záéíóúñ ]+)/i);
       if (matchName) {
         const name = matchName[1].trim();
-        updateUserMemory(sender, { name });
+        await updateUserMemory(sender, { name });
         await sendMessage(sender, `¡Mucho gusto, ${name}! 😄`);
         continue;
       }

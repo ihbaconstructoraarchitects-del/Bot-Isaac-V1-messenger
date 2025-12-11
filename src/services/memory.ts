@@ -1,59 +1,25 @@
-import fs from "fs";
-import path from "path";
+import Redis from "ioredis";
 
-const file = path.join(process.cwd(), "data", "memory.json");
+const redis = new Redis(process.env.REDIS_URL);
 
-function loadMemory() {
-  try {
-    return JSON.parse(fs.readFileSync(file, "utf8"));
-  } catch (e) {
-    return {};
-  }
+// Obtener memoria del usuario
+export async function getUserMemory(userId: string) {
+  const raw = await redis.get(`memory:${userId}`);
+  if (!raw) return { name: null, interests: [], history: [] };
+  return JSON.parse(raw);
 }
 
-function saveMemory(data: any) {
-  fs.writeFileSync(file, JSON.stringify(data, null, 2), "utf8");
+// Guardar la memoria del usuario
+export async function updateUserMemory(userId: string, newData: any) {
+  const current = await getUserMemory(userId);
+  const merged = { ...current, ...newData };
+  await redis.set(`memory:${userId}`, JSON.stringify(merged));
+  return merged;
 }
 
-export function getUserMemory(userId: string) {
-  const db = loadMemory();
-
-  if (!db[userId]) {
-    db[userId] = {
-      id: userId,
-      name: null,
-      age: null,
-      interests: [],
-      history: [],
-      lastInteraction: new Date().toISOString(),
-    };
-    saveMemory(db);
-  }
-
-  return db[userId];
-}
-
-export function updateUserMemory(userId: string, update: any) {
-  const db = loadMemory();
-
-  db[userId] = {
-    ...db[userId],
-    ...update,
-    lastInteraction: new Date().toISOString()
-  };
-
-  saveMemory(db);
-}
-
-export function pushHistory(userId: string, text: string) {
-  const db = loadMemory();
-
-  db[userId].history.push(text);
-  db[userId].lastInteraction = new Date().toISOString();
-
-  if (db[userId].history.length > 50) {
-    db[userId].history = db[userId].history.slice(-50);
-  }
-
-  saveMemory(db);
+// Añadir historial
+export async function pushHistory(userId: string, message: string) {
+  const mem = await getUserMemory(userId);
+  mem.history = [...(mem.history || []), message].slice(-20); // Guarda últimos 20 mensajes
+  await redis.set(`memory:${userId}`, JSON.stringify(mem));
 }

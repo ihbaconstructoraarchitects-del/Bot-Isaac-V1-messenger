@@ -22,7 +22,18 @@ const HUMAN_TRIGGERS = [
   "humano",
   "quiero hablar",
   "quiero un agente",
-  "quiero hablar con un asesor"
+  "quiero hablar con un asesor",
+  "agendar visita",
+  "hablar con alguien",
+  "contactar asesor",
+  "necesito ayuda humana",
+  "soporte humano", 
+  "quiero hablar con un vendedor",
+  "me podria llamar",
+  "me podría llamar un asesor",
+  "quiero agendar visita",
+  "vista presencial",
+  "visita"
 ];
 
 if (!VERIFY_TOKEN || !ACCESS_TOKEN) {

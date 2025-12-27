@@ -33,7 +33,8 @@ const HUMAN_TRIGGERS = [
   "me podría llamar un asesor",
   "quiero agendar visita",
   "vista presencial",
-  "visita"
+  "visita",
+  "4"
 ];
 
 if (!VERIFY_TOKEN || !ACCESS_TOKEN) {
